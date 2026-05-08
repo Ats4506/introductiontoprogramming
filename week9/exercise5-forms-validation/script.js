@@ -1,8 +1,5 @@
 /**
  * Exercise 5: Forms & Validation
- * ================================
- * Add real-time validation and submit handling.
- * Read README.md for full instructions.
  */
 
 const form = document.querySelector('#registration-form');
@@ -11,95 +8,165 @@ const form = document.querySelector('#registration-form');
 // HELPER: Show or clear an error on a field
 // ============================================================
 function showError(inputId, message) {
-  // TODO: Add class 'invalid' to the input element
-  // TODO: Set the text of the corresponding error-msg span to `message`
+  const input = document.querySelector(`#${inputId}`);
+  const errorSpan = document.querySelector(`#error-${inputId}`);
+  input.classList.add('invalid');
+  input.classList.remove('valid');
+  errorSpan.textContent = message;
 }
 
 function clearError(inputId) {
-  // TODO: Remove class 'invalid', add class 'valid' to the input
-  // TODO: Clear the error-msg span text
+  const input = document.querySelector(`#${inputId}`);
+  const errorSpan = document.querySelector(`#error-${inputId}`);
+  input.classList.remove('invalid');
+  input.classList.add('valid');
+  errorSpan.textContent = "";
 }
-
 
 // ============================================================
 // TASK 2: Individual Field Validators
-// (Return true if valid, false if invalid)
 // ============================================================
 
 function validateName() {
-  // TODO: Get #full-name value
-  // If < 2 chars: showError, return false
-  // Else: clearError, return true
+  const value = document.querySelector('#full-name').value.trim();
+  if (value.length < 2) {
+    showError('full-name', 'Name must be at least 2 characters.');
+    return false;
+  }
+  clearError('full-name');
+  return true;
 }
 
 function validateEmail() {
-  // TODO: Get #email value
-  // Use regex /^[^\s@]+@[^\s@]+\.[^\s@]+$/ to test
-  // showError or clearError appropriately
+  const value = document.querySelector('#email').value.trim();
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!regex.test(value)) {
+    showError('email', 'Please enter a valid email address.');
+    return false;
+  }
+  clearError('email');
+  return true;
 }
 
 function validatePassword() {
-  // TODO: Get #password value
-  // Must be 8+ chars AND contain at least one digit
-  // Update #password-strength indicator (Task 4)
+  const value = document.querySelector('#password').value;
+  const hasDigit = /\d/.test(value);
+  if (value.length < 8 || !hasDigit) {
+    showError('password', 'Must be 8+ characters and contain at least one digit.');
+    return false;
+  }
+  clearError('password');
+  return true;
 }
 
 function validateConfirmPassword() {
-  // TODO: Get #password and #confirm-password values
-  // They must match
+  const pass = document.querySelector('#password').value;
+  const confirm = document.querySelector('#confirm-password').value;
+  if (confirm !== pass || confirm === "") {
+    showError('confirm-password', 'Passwords do not match.');
+    return false;
+  }
+  clearError('confirm-password');
+  return true;
 }
 
 function validateAge() {
-  // TODO: Get #age value (convert to Number)
-  // Must be 18–120
+  const birthDateValue = document.querySelector('#birth-date').value;
+  if (!birthDateValue) {
+    showError('birth-date', 'Please select your birth date.');
+    return false;
+  }
+  
+  const birthDate = new Date(birthDateValue);
+  const today = new Date();
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const m = today.getMonth() - birthDate.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+
+  if (age < 18 || age > 120) {
+    showError('birth-date', 'You must be between 18 and 120 years old.');
+    return false;
+  }
+  clearError('birth-date');
+  return true;
 }
 
-function validateCountry() {
-  // TODO: Get #country value
-  // Must not be the default empty option
+function validateGender() {
+  const value = document.querySelector('#gender').value;
+  if (value === "") {
+    showError('gender', 'Please select your gender.');
+    return false;
+  }
+  clearError('gender');
+  return true;
 }
 
 function validateTerms() {
-  // TODO: Get #terms checkbox
-  // Must be checked
+  const checkbox = document.querySelector('#terms');
+  if (!checkbox.checked) {
+    showError('terms', 'You must agree to the terms.');
+    return false;
+  }
+  clearError('terms');
+  return true;
 }
-
-
-// ============================================================
-// TASK 4: Password Strength Indicator
-// ============================================================
-function updatePasswordStrength(password) {
-  // TODO: Get #password-strength element
-  // Determine strength: weak / fair / strong
-  // Update element's class and text
-}
-
 
 // ============================================================
 // TASK 5: Bio Character Counter
 // ============================================================
 const bioTextarea = document.querySelector('#bio');
-// TODO: Add 'input' event listener to bioTextarea
-// Update #char-count text: "X / 200 characters"
-// If over 200: add 'over-limit' class, disable submit button
+const submitBtn = document.querySelector('#submit-btn');
 
+bioTextarea.addEventListener('input', function() {
+  const length = bioTextarea.value.length;
+  // Not: HTML'e bir karakter sayacı eklemediysen hata vermemesi için kontrol ekliyoruz
+  const charCounter = document.querySelector('#char-count'); 
+  if (charCounter) {
+    charCounter.textContent = `${length} / 200 characters`;
+    if (length > 200) {
+      charCounter.classList.add('over-limit');
+      submitBtn.disabled = true;
+    } else {
+      charCounter.classList.remove('over-limit');
+      submitBtn.disabled = false;
+    }
+  }
+});
 
 // ============================================================
 // TASK 2: Attach real-time listeners
 // ============================================================
-// TODO: Add 'blur' (or 'input') event listeners to each field
-// that call its validator function
-
+document.querySelector('#full-name').addEventListener('blur', validateName);
+document.querySelector('#email').addEventListener('blur', validateEmail);
+document.querySelector('#password').addEventListener('input', validatePassword);
+document.querySelector('#confirm-password').addEventListener('input', validateConfirmPassword);
+document.querySelector('#birth-date').addEventListener('blur', validateAge);
+document.querySelector('#gender').addEventListener('change', validateGender);
+document.querySelector('#terms').addEventListener('change', validateTerms);
 
 // ============================================================
 // TASK 3: Submit Handler
 // ============================================================
 form.addEventListener('submit', function(event) {
-  event.preventDefault(); // Always prevent default first
+  event.preventDefault();
 
-  // TODO: Run all validators and collect results
-  // const results = [validateName(), validateEmail(), ...]
+  const isNameValid = validateName();
+  const isEmailValid = validateEmail();
+  const isPasswordValid = validatePassword();
+  const isConfirmValid = validateConfirmPassword();
+  const isAgeValid = validateAge();
+  const isGenderValid = validateGender();
+  const isTermsValid = validateTerms();
 
-  // TODO: If all true → show #success-message, hide form
-  // TODO: If any false → scroll to first invalid field
+  if (isNameValid && isEmailValid && isPasswordValid && isConfirmValid && isAgeValid && isGenderValid && isTermsValid) {
+    document.querySelector('#success-message').classList.remove('hidden');
+    form.classList.add('hidden');
+    window.scrollTo(0, 0);
+  } else {
+    // İlk hatalı alana odaklan
+    const firstInvalid = document.querySelector('.invalid');
+    if (firstInvalid) firstInvalid.focus();
+  }
 });
