@@ -1,143 +1,187 @@
-/* 
-  Exercise 3: Responsive Design
+/* Exercise 3: Responsive Design
   ==============================
-  MOBILE-FIRST: Write base styles for small screens,
-  then use min-width media queries to enhance for larger screens.
-
-  Breakpoints to use:
-    600px  → tablet
-    900px  → desktop
-    1200px → wide desktop
 */
 
-/* ===== TODO: CSS Custom Properties ===== */
+/* ===== Görev 1: Kendi Renklerimiz ===== */
 :root {
-
+  --arka-plan: #f8f9fa;
+  --metin-renk: #333;
+  --koyu-mavi: #1a3a5c;
+  --beyaz: #ffffff;
 }
 
-/* ===== TODO: Base Styles (Mobile First) ===== */
+/* ===== Temel Ayarlar (Mobil Öncelikli) ===== */
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  /* Set font, background, color */
+  font-family: Arial, sans-serif;
+  background-color: var(--arka-plan);
+  color: var(--metin-renk);
+  line-height: 1.6;
 }
 
-/* ===== TODO Task 2: Header & Nav (mobile: stacked) ===== */
+/* ===== Görev 2: Tepe Menüsü (Mobilde Alt Alta) ===== */
 header {
-
+  background-color: var(--koyu-mavi);
+  color: var(--beyaz);
+  padding: 1rem;
 }
 
 .header-inner {
-  /* On mobile, stack logo and nav vertically */
+  display: flex;
+  flex-direction: column; /* Mobilde alt alta dizer */
+  align-items: center;
+  gap: 15px;
 }
 
 .logo {
-  /* Style the site logo/brand name */
+  font-size: 1.5rem;
+  font-weight: bold;
 }
 
 nav {
-  /* On mobile: links stacked in a column */
+  display: flex;
+  flex-direction: column; /* Linkleri alt alta dizer */
+  width: 100%;
+  text-align: center;
 }
 
 nav a {
-  /* Comfortable tap targets (min 44px height), no underline */
+  color: var(--beyaz);
+  text-decoration: none;
+  padding: 12px;
+  min-height: 44px; /* Telefonda parmakla rahat basılsın diye */
 }
 
 nav a:hover {
-
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
 }
 
-/* ===== TODO Task 5: Hero Section ===== */
+/* ===== Görev 5: Karşılama Ekranı (Hero) ===== */
 #hero {
-  /* Centered text, some padding */
+  text-align: center;
+  padding: 3rem 1rem;
+  background-color: #e9ecef;
+  margin-bottom: 2rem;
 }
 
 #hero h1 {
-  /* TODO: Use clamp() for responsive font size */
-  /* font-size: clamp(1.5rem, 5vw, 3rem); */
+  /* Ekran küçüldükçe yazıyı otomatik küçültür (clamp) */
+  font-size: clamp(1.5rem, 5vw, 3rem);
+  margin-bottom: 10px;
 }
 
-/* ===== TODO Task 3: Flexbox Cards ===== */
+/* ===== Görev 3: Flexbox Kutuları ===== */
 .flex-container {
-  /* display: flex, flex-wrap: wrap, gap */
+  display: flex;
+  flex-wrap: wrap; /* Sığmazsa aşağı atar */
+  gap: 15px;
 }
 
 .flex-card {
-  /* flex: 1 1 250px so they wrap naturally */
+  flex: 1 1 250px; /* En az 250px genişliğinde olur */
+  background: var(--beyaz);
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
 }
 
-/* ===== TODO Task 4: CSS Grid Gallery ===== */
+/* ===== Görev 4: CSS Grid Fotoğraf Galerisi ===== */
 .photo-grid {
-  /* display: grid, 1 column on mobile, gap */
+  display: grid;
+  grid-template-columns: 1fr; /* Mobilde 1 sütun (alt alta) */
+  gap: 15px;
 }
 
 .grid-item {
-  /* Position relative for caption overlay */
+  position: relative;
 }
 
 .grid-item img {
-  /* Make images fill their grid cell */
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 5px;
 }
 
 .caption {
-  /* Optional: overlay caption */
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  color: var(--beyaz);
+  padding: 5px 10px;
+  border-radius: 3px;
+  font-size: 0.9rem;
 }
 
-/* ===== TODO: Footer ===== */
+/* ===== Footer ve Bölüm Ayarları ===== */
 footer {
-
+  text-align: center;
+  padding: 2rem;
+  background: #222;
+  color: var(--beyaz);
+  margin-top: 3rem;
 }
 
-/* ===== TODO: Sections ===== */
 section {
-  /* padding, max-width, center with margin auto */
+  padding: 2rem 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 
 /* ============================================
-   TABLET (600px+)
+   TABLET EKRANLARI (600px ve üzeri)
    ============================================ */
 @media (min-width: 600px) {
 
-  /* TODO Task 2: Nav becomes horizontal */
+  /* Menü tablet ekranında yan yana gelsin */
   .header-inner {
-    /* Row layout */
+    flex-direction: row;
+    justify-content: space-between;
   }
 
   nav {
-    /* Horizontal row */
+    flex-direction: row;
+    width: auto;
   }
 
-  /* TODO Task 4: Grid becomes 2 columns */
+  /* Grid galeri 2 sütun olsun */
   .photo-grid {
-    /* grid-template-columns: repeat(2, 1fr) */
+    grid-template-columns: repeat(2, 1fr);
   }
 
-  /* Make the .featured item span 2 columns */
+  /* Öne çıkan büyük fotoğraf 2 sütun yer kaplasın */
   .featured {
-    /* grid-column: span 2 */
+    grid-column: span 2;
   }
 }
 
 
 /* ============================================
-   DESKTOP (900px+)
+   MASAÜSTÜ BİLGİSAYAR (900px ve üzeri)
    ============================================ */
 @media (min-width: 900px) {
 
-  /* TODO Task 4: Grid becomes 3 columns */
+  /* Grid galeri büyük ekranda 3 sütun olsun */
   .photo-grid {
-    /* grid-template-columns: repeat(3, 1fr) */
+    grid-template-columns: repeat(3, 1fr);
   }
 
 }
 
 
 /* ============================================
-   WIDE (1200px+)
+   BÜYÜK EKRANLAR (1200px ve üzeri)
    ============================================ */
 @media (min-width: 1200px) {
-
-  /* Add any refinements for large screens */
-
+  
+  /* Ekstra bir güzellik: Kartların üzerine gelince hafifçe yukarı kalsın */
+  .flex-card:hover {
+    transform: translateY(-5px);
+    transition: 0.3s;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  }
 }
