@@ -1,119 +1,125 @@
-/* 
+/*
   Exercise 2: CSS Styling
   ========================
-  Complete the tasks described in README.md.
-  Do NOT modify index.html — all your work goes here.
 */
 
-/* =============================================
-   TODO Task 2: Define CSS Custom Properties
-   ============================================= */
+/* Görev 2: Kendi Renklerimizi Belirleme */
 :root {
-  /* Add your custom properties here */
-  /* Example: --color-primary: #your-color; */
+  --ana-renk: #0056b3;
+  --arkaplan: #f4f4f4;
+  --yazi-renk: #333333;
 }
 
-
-/* =============================================
-   TODO Task 3: Base / Reset Styles
-   ============================================= */
+/* Görev 3: Temel Ayarlar (Reset) */
 * {
-  /* Consider a box-sizing reset */
+  box-sizing: border-box;
 }
 
 body {
-  /* Set font-family, background-color, color, margin */
+  font-family: 'Roboto', sans-serif;
+  background-color: var(--arkaplan);
+  color: var(--yazi-renk);
+  margin: 0;
 }
 
-
-/* =============================================
-   TODO Task 3: Typography — Headings
-   ============================================= */
+/* Görev 3: Başlıklar ve Paragraf Ayarları */
 h1 {
-  /* Large, impactful heading */
+  font-size: 2.5rem;
+  margin-bottom: 10px;
 }
 
 h2 {
-  /* Section heading */
+  border-bottom: 2px solid var(--ana-renk);
+  padding-bottom: 5px;
+  margin-top: 40px;
 }
 
 h3 {
-  /* Card heading */
+  color: var(--ana-renk);
 }
 
-/* TODO Task 3: Pseudo-element — first letter of a paragraph */
-/* p::first-letter { ... } */
+/* Paragrafların ilk harfini büyütme */
+p::first-letter {
+  font-size: 150%;
+  font-weight: bold;
+  color: var(--ana-renk);
+}
 
-
-/* =============================================
-   TODO Task 3: Navigation Links
-   ============================================= */
+/* Görev 3: Menü (Navigasyon) Linkleri */
 nav {
-  /* Style the nav bar */
+  background-color: #222;
+  padding: 15px;
+  text-align: center;
 }
 
 nav a {
-  /* No underline, some padding, use your color variable */
+  color: white;
+  text-decoration: none;
+  padding: 10px 20px;
+  margin: 0 5px;
 }
 
 nav a:hover {
-  /* Add an underline or color change on hover */
+  background-color: var(--ana-renk);
+  border-radius: 5px;
 }
 
 nav a:focus {
-  /* Make focus state clearly visible (don't remove it!) */
+  outline: 3px solid orange;
 }
 
-
-/* =============================================
-   TODO Task 4: Header / Hero
-   ============================================= */
+/* Görev 4: Tepe Kısmı (Hero) */
 #hero {
-  /* Background color, padding, text alignment */
+  background-color: white;
+  padding: 40px 20px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
 }
 
-
-/* =============================================
-   TODO Task 4: Cards & Box Model
-   ============================================= */
+/* Görev 4: Kartlar (Kutucuklar) */
 .card-grid {
-  /* Space the cards — you can use basic margin or any layout */
+  display: flex;
+  gap: 20px;
+  padding: 20px 0;
 }
 
 .card {
-  /* 
-    Show off the box model:
-    - padding (inside space)
-    - border (visible edge)
-    - margin (outside space)
-    - border-radius (rounded corners)
-  */
+  background-color: white;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  box-shadow: 2px 4px 8px rgba(0,0,0,0.1);
+  width: 100%;
 }
 
-
-/* =============================================
-   TODO Task 5: Alternating List Items
-   ============================================= */
+/* Görev 5: Sıralı Renkli Liste */
 .fancy-list {
-  /* Remove default bullets, add padding */
+  list-style-type: none;
+  padding: 0;
 }
 
 .fancy-list li {
-  /* Base styles for list items */
+  padding: 15px;
+  border: 1px solid #ccc;
+  margin-bottom: 5px;
 }
 
+/* Tek sayılı satırlar gri */
 .fancy-list li:nth-child(odd) {
-  /* Different background for odd items */
+  background-color: #e9ecef;
 }
 
+/* Çift sayılı satırlar beyaz */
 .fancy-list li:nth-child(even) {
-  /* Different background for even items */
+  background-color: white;
 }
 
-
-/* =============================================
-   TODO Task 6: Footer
-   ============================================= */
+/* Görev 6: En Alt Kısım (Footer) */
 footer {
-  /* Distinguish the footer from main content */
+  background-color: #222;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  margin-top: 50px;
 }
