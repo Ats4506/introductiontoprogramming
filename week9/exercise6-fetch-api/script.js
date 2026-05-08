@@ -1,8 +1,5 @@
 /**
  * Exercise 6: Fetch & APIs
- * =========================
- * Complete each async function below.
- * All APIs used are free and require no authentication.
  */
 
 // ============================================================
@@ -19,7 +16,6 @@ function showError(element, message) {
 
 // ============================================================
 // TASK 1 — Random Quote
-// API: https://api.quotable.io/random
 // ============================================================
 const quoteDisplay = document.querySelector('#quote-display');
 const btnNewQuote  = document.querySelector('#btn-new-quote');
@@ -28,15 +24,15 @@ async function fetchQuote() {
   showLoading(quoteDisplay);
 
   try {
-    // TODO: fetch from 'https://api.quotable.io/random'
-    // TODO: check response.ok, throw if not
-    // TODO: parse JSON
-    // TODO: update quoteDisplay with the quote content and author
-    // Template:
-    // quoteDisplay.innerHTML = `
-    //   <blockquote>"${data.content}"</blockquote>
-    //   <p class="quote-author">— ${data.author}</p>
-    // `;
+    const response = await fetch('https://api.quotable.io/random');
+    if (!response.ok) throw new Error('Network response was not ok');
+    
+    const data = await response.json();
+    
+    quoteDisplay.innerHTML = `
+      <blockquote>"${data.content}"</blockquote>
+      <p class="quote-author">— ${data.author}</p>
+    `;
 
   } catch (error) {
     showError(quoteDisplay, 'Could not load quote. Check your connection.');
@@ -44,14 +40,12 @@ async function fetchQuote() {
   }
 }
 
-// Fetch a quote when the page loads, and on button click
 fetchQuote();
 btnNewQuote.addEventListener('click', fetchQuote);
 
 
 // ============================================================
 // TASK 2 — GitHub User Search
-// API: https://api.github.com/users/{username}
 // ============================================================
 const githubInput  = document.querySelector('#github-input');
 const btnSearch    = document.querySelector('#btn-search-user');
@@ -64,14 +58,29 @@ async function searchUser() {
   showLoading(githubResult);
 
   try {
-    // TODO: fetch from `https://api.github.com/users/${username}`
-    // TODO: If response.status === 404, show "User not found"
-    // TODO: If !response.ok for other reasons, throw an error
-    // TODO: Parse JSON and display:
-    //   - avatar_url (as an <img>)
-    //   - name, login, bio
-    //   - followers, public_repos
-    //   - html_url (as a link)
+    const response = await fetch(`https://api.github.com/users/${username}`);
+    
+    if (response.status === 404) {
+      showError(githubResult, 'User not found');
+      return;
+    }
+    
+    if (!response.ok) throw new Error('Search failed');
+
+    const data = await response.json();
+    
+    githubResult.innerHTML = `
+      <div class="github-profile">
+        <img src="${data.avatar_url}" alt="${data.login}" width="100">
+        <h3>${data.name || data.login}</h3>
+        <p>${data.bio || 'No bio available'}</p>
+        <ul>
+          <li>Followers: ${data.followers}</li>
+          <li>Public Repos: ${data.public_repos}</li>
+        </ul>
+        <a href="${data.html_url}" target="_blank">View Profile</a>
+      </div>
+    `;
 
   } catch (error) {
     showError(githubResult, error.message || 'Search failed. Try again.');
@@ -84,7 +93,6 @@ githubInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') searchUs
 
 // ============================================================
 // TASK 3 — Posts Feed with Pagination
-// API: https://jsonplaceholder.typicode.com/posts
 // ============================================================
 const postsContainer = document.querySelector('#posts-container');
 const btnLoadMore    = document.querySelector('#btn-load-more');
@@ -93,17 +101,49 @@ const postsPerPage = 10;
 
 async function loadPosts() {
   const start = (currentPage - 1) * postsPerPage;
-  // TODO: fetch from:
-  //   `https://jsonplaceholder.typicode.com/posts?_start=${start}&_limit=${postsPerPage}`
-  // TODO: For each post, create a card element and append to postsContainer
-  // TODO: When a card is clicked, call loadComments(post.id, cardElement)
-  // TODO: Increment currentPage after success
+  
+  try {
+    const response = await fetch(`https://jsonplaceholder.typicode.com/posts?_start=${start}&_limit=${postsPerPage}`);
+    const posts = await response.json();
+
+    posts.forEach(post => {
+      const card = document.createElement('div');
+      card.className = 'post-card';
+      card.innerHTML = `
+        <h3>${post.title}</h3>
+        <p>${post.body}</p>
+        <div class="comments-section" id="comments-${post.id}"></div>
+      `;
+      card.addEventListener('click', () => loadComments(post.id, card));
+      postsContainer.appendChild(card);
+    });
+
+    currentPage++;
+  } catch (error) {
+    console.error("Posts could not be loaded", error);
+  }
 }
 
 async function loadComments(postId, cardElement) {
-  // TODO: fetch from `https://jsonplaceholder.typicode.com/posts/${postId}/comments`
-  // TODO: Display comments inside or below cardElement
-  // Toggle: if comments already shown, hide them
+  const commentDiv = cardElement.querySelector('.comments-section');
+  
+  if (commentDiv.innerHTML !== "") {
+    commentDiv.innerHTML = ""; // Toggle: Varsa temizle (gizle)
+    return;
+  }
+
+  try {
+    const response = await fetch(`https://jsonplaceholder.typicode.com/posts/${postId}/comments`);
+    const comments = await response.json();
+    
+    commentDiv.innerHTML = '<h4>Comments:</h4>' + comments.map(c => `
+      <div class="comment">
+        <p><strong>${c.email}:</strong> ${c.body}</p>
+      </div>
+    `).join('');
+  } catch (error) {
+    console.error("Comments could not be loaded", error);
+  }
 }
 
 loadPosts();
@@ -120,19 +160,23 @@ async function fetchAllParallel() {
   showLoading(multiResult);
 
   try {
-    // TODO: Use Promise.all to fetch all three simultaneously:
-    //   1. https://api.quotable.io/random
-    //   2. https://jsonplaceholder.typicode.com/users/1
-    //   3. https://jsonplaceholder.typicode.com/todos/1
-    //
-    // const [quoteRes, userRes, todoRes] = await Promise.all([
-    //   fetch('...'), fetch('...'), fetch('...')
-    // ]);
-    // const [quote, user, todo] = await Promise.all([
-    //   quoteRes.json(), userRes.json(), todoRes.json()
-    // ]);
-    //
-    // TODO: Display all three results in multiResult
+    const [quoteRes, userRes, todoRes] = await Promise.all([
+      fetch('https://api.quotable.io/random'),
+      fetch('https://jsonplaceholder.typicode.com/users/1'),
+      fetch('https://jsonplaceholder.typicode.com/todos/1')
+    ]);
+
+    const [quote, user, todo] = await Promise.all([
+      quoteRes.json(), userRes.json(), todoRes.json()
+    ]);
+
+    multiResult.innerHTML = `
+      <div class="multi-fetch-box">
+        <p><strong>Quote:</strong> ${quote.content}</p>
+        <p><strong>User:</strong> ${user.name}</p>
+        <p><strong>Todo:</strong> ${todo.title} (${todo.completed ? '✅' : '❌'})</p>
+      </div>
+    `;
 
   } catch (error) {
     showError(multiResult, 'One or more requests failed.');
