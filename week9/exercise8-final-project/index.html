@@ -3,29 +3,46 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Final Project — Week 9</title>
-  <!-- 
-    FINAL PROJECT STARTER TEMPLATE
-    ================================
-    Replace everything below with your project.
-    See README.md for the three project options and all requirements.
-    
-    Choose your option:
-      A) Weather Dashboard
-      B) Task Manager
-      C) Quiz App
-  -->
+  <title>Elite Task Manager</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <!-- Your HTML goes here -->
-  <main style="padding: 4rem; text-align: center; font-family: system-ui, sans-serif;">
-    <h1>🏗️ Final Project</h1>
-    <p>Replace this template with your chosen project. Good luck!</p>
-    <p>Options: <strong>A) Weather Dashboard</strong> · <strong>B) Task Manager</strong> · <strong>C) Quiz App</strong></p>
-    <p>Read <code>README.md</code> for full instructions.</p>
+  <header>
+    <h1>✅ Elite Task Manager</h1>
+    <div class="stats">
+      <span id="total-tasks">Total: 0</span> | <span id="completed-tasks">Done: 0</span>
+    </div>
+  </header>
+
+  <main>
+    <section class="input-section">
+      <form id="task-form">
+        <input type="text" id="task-input" placeholder="What needs to be done?" required />
+        <select id="priority-input">
+          <option value="low">Low</option>
+          <option value="medium" selected>Medium</option>
+          <option value="high">High</option>
+        </select>
+        <button type="submit" id="add-btn">Add Task</button>
+      </form>
+    </section>
+
+    <section class="filter-section">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="pending">Pending</button>
+      <button class="filter-btn" data-filter="completed">Completed</button>
+      <button id="clear-completed">Clear Done</button>
+    </section>
+
+    <ul id="task-list">
+      <!-- Tasks will appear here -->
+    </ul>
   </main>
+
+  <footer>
+    <p>Final Project · Web Development Course · 2026</p>
+  </footer>
 
   <script src="script.js"></script>
 </body>
